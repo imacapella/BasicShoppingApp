@@ -1,0 +1,13 @@
+import Foundation
+
+struct Product: Codable, Hashable, Identifiable {
+    let id: Int
+    let title: String
+    let price: Double
+    let thumbnail: String
+    let rating: Double
+}
+
+struct ProductsResponse: Codable {
+    let products: [Product]
+}
