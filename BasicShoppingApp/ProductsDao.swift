@@ -11,39 +11,35 @@ class ProductsDao {
     // Fetch data function using URLSession
     func fetchData(completion: @escaping (Result<[Product], Error>) -> Void) {
         let endPoint = "https://dummyjson.com/products"
-        guard let url = URL(string: endPoint) else {
+        
+        guard let url = URL(string: endPoint) else{
             print("Invalid URL")
             return
         }
-
-        // URLSession data task
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            // Check for errors
+        
+        let task = URLSession.shared.dataTask(with: url){ data, response, error in
             if let error = error {
+                print("olmadı be abi")
                 completion(.failure(error))
                 return
             }
-
-            // Check if data is non-nil
+            
             guard let data = data else {
-                print("No data returned from server")
+                print("No data returned from URL")
                 return
             }
-
-            do {
-                // Decode JSON into Swift model
-                let productsResponse = try JSONDecoder().decode(ProductsResponse.self, from: data)
+            // Start the network request
+            
+            do{
+                let productResponse = try JSONDecoder().decode(ProductsResponse.self, from: data)
                 // Pass the products array to the completion handler
-                completion(.success(productsResponse.products))
-            } catch {
-                // Handle JSON decoding errors
+                completion(.success(productResponse.products))
+                
+            }catch{
                 completion(.failure(error))
             }
+            
         }
-
-        // Start the network request
         task.resume()
     }
-
 }
-

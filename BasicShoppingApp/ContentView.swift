@@ -19,6 +19,14 @@ struct ContentView: View {
             } else {
                 List(products) { product in
                     VStack(alignment: .leading) {
+                        AsyncImage(url: URL(string: product.thumbnail)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } placeholder: {
+                            // Placeholder while the image is being loaded
+                            ProgressView()
+                        }
                         Text(product.title)
                             .font(.headline)
                         Text("Price: $\(product.price, specifier: "%.2f")")
