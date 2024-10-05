@@ -34,6 +34,7 @@ class ProductsDao {
                 let productResponse = try JSONDecoder().decode(ProductsResponse.self, from: data)
                 // Pass the products array to the completion handler
                 completion(.success(productResponse.products))
+                print("oldu abi")
                 
             }catch{
                 completion(.failure(error))
