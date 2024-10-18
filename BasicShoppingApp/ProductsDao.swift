@@ -7,20 +7,21 @@
 
 import Foundation
 
-class ProductsDao {
+class ProductsDao: ObservableObject {
+    @Published var products: [Product] = []
+    
     // Fetch data function using URLSession
-    func fetchData(completion: @escaping (Result<[Product], Error>) -> Void) {
+    func fetchData() {
         let endPoint = "https://dummyjson.com/products"
         
-        guard let url = URL(string: endPoint) else{
+        guard let url = URL(string: endPoint) else {
             print("Invalid URL")
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url){ data, response, error in
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
-                print("olmadı be abi")
-                completion(.failure(error))
+                print("Data fetch failed: \(error.localizedDescription)")
                 return
             }
             
@@ -28,18 +29,20 @@ class ProductsDao {
                 print("No data returned from URL")
                 return
             }
+            
             // Start the network request
-            
-            do{
+            do {
                 let productResponse = try JSONDecoder().decode(ProductsResponse.self, from: data)
-                // Pass the products array to the completion handler
-                completion(.success(productResponse.products))
-                print("oldu abi")
                 
-            }catch{
-                completion(.failure(error))
+                // Update the products array on the main thread
+                DispatchQueue.main.async {
+                    self.products = productResponse.products
+                }
+                print("Data fetched successfully!")
+                
+            } catch {
+                print("Failed to decode JSON: \(error.localizedDescription)")
             }
-            
         }
         task.resume()
     }
