@@ -11,3 +11,7 @@ struct Product: Codable, Hashable, Identifiable {
 struct ProductsResponse: Codable {
     let products: [Product]
 }
+
+class FavoritedProducts: ObservableObject {
+    @Published var favoriteProducts : [Product] = []
+}
