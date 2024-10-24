@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
-struct WebImage: View {
+struct WebImageManuel: View {
     var url: String
     var width: CGFloat
     var height: CGFloat
     var body: some View {
+        
         AsyncImage(url: URL(string: url)){ image in
             image
                 .resizable()

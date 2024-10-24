@@ -35,8 +35,10 @@ struct ProductsListView: View {
                     
                 }.navigationTitle("Products")
                 .onAppear {
-                    dao.fetchData()
+                    if dao.products.isEmpty && favoriteItems.favoriteProducts.isEmpty {
+                        dao.fetchData()
                     }
+                }
             }
         }
     }

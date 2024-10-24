@@ -9,32 +9,34 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var dao = ProductsDao()
-    @StateObject var favoriteProducts = FavoritedProducts()
+    @StateObject var favoriteItems = FavoritedProducts()
     
     var body: some View {
         TabView {
-            ProductsListView(favoriteItems: favoriteProducts) // favoriteProducts'u buradan geçiriyoruz
+            ProductsListView(favoriteItems: favoriteItems) // favoriteProducts'u buradan geçiriyoruz
                 .tabItem {
                     Label("Products", systemImage: "list.bullet")
                 }
 
-            FavoritesView(favoriteItems: favoriteProducts) // Aynı favori listesini favoriler ekranına da geçiriyoruz
+            FavoritesView(favoriteItems: favoriteItems) // Aynı favori listesini favoriler ekranına da geçiriyoruz
                 .tabItem {
                     Label("Favorites", systemImage: "heart")
+                }.onAppear{
+                         dao.fetchData()
                 }
 
             Text("Cart")
                 .tabItem {
                     Label("Cart", systemImage: "cart")
                 }
+        }.task {
+            if dao.products.isEmpty{
+                 dao.fetchData()
+            }
         }
     }
 }
 
-
-// MARK: - TAB VIEW
-
-// MARK: - TAB VIEW
 
 
 

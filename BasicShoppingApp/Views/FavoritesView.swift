@@ -1,71 +1,86 @@
-//
-//  FavoritesView.swift
-//  BasicShoppingApp
-//
-//  Created by Gürkan Karadaş on 22.10.2024.
-//
-
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct FavoritesView: View {
     @ObservedObject var favoriteItems: FavoritedProducts
-    
+    var product: Product?
+
     var body: some View {
         NavigationView {
             ZStack {
-                FavoritesCardView(favoriteItems: favoriteItems)
-            }.onAppear{
-                print(favoriteItems.favoriteProducts)
+                ScrollView {
+                    VStack {
+                        ForEach(favoriteItems.favoriteProducts) { product in
+                            FavoritesCardView(favoriteItems: favoriteItems, product: product)
+                                .padding(.horizontal) // Yatayda boşluk ekliyoruz
+                                .padding(.vertical, 8) // Kartlar arası dikey boşluk
+                                .animation(.bouncy)
+                        }
+                    }
+                }
+            }
+            .onAppear {
+                print(favoriteItems.favoriteProducts.first?.thumbnail ?? "Invalid URL")
             }
             .navigationTitle("Favorites")
         }
     }
 }
 
-
-#Preview {
-    // Favoriler için örnek oluşturuyoruz.
-    FavoritesView(favoriteItems: FavoritedProducts())
-}
-
 struct FavoritesCardView: View {
-    @ObservedObject var favoriteItems: FavoritedProducts // Dışarıdan FavoritedProducts alıyoruz
-    
+    @ObservedObject var favoriteItems: FavoritedProducts
+    var product: Product?
+
     var body: some View {
         ZStack {
             VStack {
-                ForEach(favoriteItems.favoriteProducts) { product in
-                    HStack {
-                        WebImage(url: product.thumbnail, width: 42, height: 42)
-                            .padding(.leading)
+                HStack {
+                    if let product = product {
+                        WebImage(url: URL(string: product.thumbnail))
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 50, height: 50)
+                            .padding(.trailing, 8) // Resim ile metin arasında boşluk
+
                         VStack(alignment: .leading) {
-                            Text(product.title)
-                                .font(.title2)
-                            Text("$\(product.price, specifier: "%.2f")")
+                            Text(product.title.count > 20 ? "\(product.title.prefix(20))..." : product.title)
                                 .font(.title3)
+                                .fontWeight(.semibold)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            Text("$\(product.price, specifier: "%.2f")")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
                         }
-                        Spacer() // Boşluk bırakmak için
-                        Button(){
-                            if let index = favoriteItems.favoriteProducts.firstIndex(where: {$0.id == product.id }){
+
+                        Spacer() // Metin ile buton arasında boşluk
+
+                        Button {
+                            if let index = favoriteItems.favoriteProducts.firstIndex(where: { $0.id == product.id }) {
                                 favoriteItems.favoriteProducts.remove(at: index)
                             }
-                        } label:{
+                        } label: {
                             Image(systemName: "heart.fill")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 19, height: 19)
+                                .shadow(color: .red, radius: 2)
                                 .foregroundColor(.red)
-                                .padding(.trailing)
+                                .padding(.trailing, 8) // Sağ tarafta küçük bir boşluk
                         }
                     }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 15)
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                            .frame(height: 55)
-                    ).padding()
-                    
                 }
+                .padding(.vertical, 10) // Kart içeriği için dikeyde biraz boşluk
             }
+            .padding(10) // Kartın genel kenar boşlukları
+
+            .overlay(
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(Color.gray.opacity(0.4), lineWidth: 2)
+                    .shadow(color: .gray, radius: 20, x: 10, y: 20)
+            )
         }
     }
 }

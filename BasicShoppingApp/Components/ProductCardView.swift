@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct ProductCardView: View {
     @Binding var product: Product// Product nesnesi parametre olarak alınıyor
@@ -19,7 +20,6 @@ struct ProductCardView: View {
                     
                     isFavorite.toggle()
                     if isFavorite {
-                        // Favori listesine ekle
                         self.favoriteItems.favoriteProducts.append(product)
                     } else {
                         if let index = self.favoriteItems.favoriteProducts.firstIndex(where: { $0.id == product.id }) {
@@ -39,16 +39,11 @@ struct ProductCardView: View {
             //Spacer()
             
             // Ürün görseli
-            AsyncImage(url: URL(string: product.thumbnail)) { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-            } placeholder: {
-                ProgressView()
-                    .frame(width: 80, height: 80)
-            }
-            .padding(.horizontal)
+            WebImage(url: URL(string: product.thumbnail))
+                .resizable()
+                .scaledToFit()
+                .frame(width: 80, height: 80)
+                .padding(.horizontal)
             
             VStack(alignment: .leading) {
                 // Ürün adı
