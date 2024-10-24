@@ -16,13 +16,12 @@ struct ProductCardView: View {
             HStack {
                 Spacer()
                 Button {
+                    
                     isFavorite.toggle()
                     if isFavorite {
                         // Favori listesine ekle
                         self.favoriteItems.favoriteProducts.append(product)
                     } else {
-                        
-                        // Favori listesinden çıkar (Bu kısmı tam çözemedim hayırlısı diyelim allah büyük)
                         if let index = self.favoriteItems.favoriteProducts.firstIndex(where: { $0.id == product.id }) {
                             self.favoriteItems.favoriteProducts.remove(at: index)
                         }
@@ -30,7 +29,7 @@ struct ProductCardView: View {
                       // Favori durumunu değiştir
                     print(product.title, isFavorite, favoriteItems.favoriteProducts)
                 } label: {
-                    Image(systemName: isFavorite ? "heart.fill" : "heart")
+                    Image(systemName: isFavorite(product: product) ? "heart.fill" : "heart")
                         .foregroundColor(.red)
                 }
                 .animation(.easeIn(duration: 0.1))
@@ -86,5 +85,11 @@ struct ProductCardView: View {
         .frame(width: 170, height: 200)
         //.padding()*/
     }
+    
+    func isFavorite(product: Product) -> Bool {
+        return favoriteItems.favoriteProducts.contains(where: { $0.id == product.id })
+    }
+
+    
 }
 

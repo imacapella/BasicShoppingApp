@@ -13,16 +13,7 @@ struct FavoritesView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                VStack { // HStack yerine VStack, çünkü ürünleri dikey listelemek daha yaygın bir kullanım
-                    ForEach(favoriteItems.favoriteProducts) { product in
-                        HStack {
-                            Text(product.title) // Ürün başlığını göster
-                            Spacer() // Boşluk bırakmak için
-                            Text("$\(product.price, specifier: "%.2f")") // Ürün fiyatını göster
-                        }
-                        .padding()
-                    }
-                }
+                FavoritesCardView(favoriteItems: favoriteItems)
             }.onAppear{
                 print(favoriteItems.favoriteProducts)
             }
@@ -42,7 +33,39 @@ struct FavoritesCardView: View {
     
     var body: some View {
         ZStack {
-            
+            VStack {
+                ForEach(favoriteItems.favoriteProducts) { product in
+                    HStack {
+                        WebImage(url: product.thumbnail, width: 42, height: 42)
+                            .padding(.leading)
+                        VStack(alignment: .leading) {
+                            Text(product.title)
+                                .font(.title2)
+                            Text("$\(product.price, specifier: "%.2f")")
+                                .font(.title3)
+                        }
+                        Spacer() // Boşluk bırakmak için
+                        Button(){
+                            if let index = favoriteItems.favoriteProducts.firstIndex(where: {$0.id == product.id }){
+                                favoriteItems.favoriteProducts.remove(at: index)
+                            }
+                        } label:{
+                            Image(systemName: "heart.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 19, height: 19)
+                                .foregroundColor(.red)
+                                .padding(.trailing)
+                        }
+                    }
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                            .frame(height: 55)
+                    ).padding()
+                    
+                }
+            }
         }
     }
 }
