@@ -11,29 +11,37 @@ import SDWebImageSwiftUI
 struct ProductCardView: View {
     var product: Product// Product nesnesi parametre olarak alınıyor
     @ObservedObject var favoriteItems: FavoritedProducts
+    @ObservedObject var cartItems: AddToCard
     @State var isFavorite: Bool = false
     var body: some View {
         VStack {
             HStack {
                 Spacer()
-                Button {
-                    
-                    isFavorite.toggle()
-                    if isFavorite {
-                        self.favoriteItems.favoriteProducts.append(product)
-                    } else {
-                        if let index = self.favoriteItems.favoriteProducts.firstIndex(where: { $0.id == product.id }) {
-                            self.favoriteItems.favoriteProducts.remove(at: index)
+                HStack {
+                    Text("⭐ \(String(format: "%.1f", product.rating))")
+                        .fontWeight(.semibold)
+                        .padding(.leading)
+                    Spacer()
+                    Button {
+                        
+                        isFavorite.toggle()
+                        if isFavorite {
+                            self.favoriteItems.favoriteProducts.append(product)
+                        } else {
+                            if let index = self.favoriteItems.favoriteProducts.firstIndex(where: { $0.id == product.id }) {
+                                self.favoriteItems.favoriteProducts.remove(at: index)
+                            }
                         }
+                        // Favori durumunu değiştir
+                        print(product.title, isFavorite, favoriteItems.favoriteProducts)
+                    } label: {
+                        Image(systemName: isFavorite(product: product) ? "heart.fill" : "heart")
+                            .foregroundColor(.red)
+                            .padding(.trailing)
                     }
-                      // Favori durumunu değiştir
-                    print(product.title, isFavorite, favoriteItems.favoriteProducts)
-                } label: {
-                    Image(systemName: isFavorite(product: product) ? "heart.fill" : "heart")
-                        .foregroundColor(.red)
+                    .animation(.easeIn(duration: 0.1))
+                    .padding()
                 }
-                .animation(.easeIn(duration: 0.1))
-                .padding()
             }
             
             //Spacer()
@@ -62,12 +70,27 @@ struct ProductCardView: View {
                 // Ürün fiyatı
                 Text("$\(product.price, specifier: "%.2f")")
                     .fontWeight(.semibold)
-                
+                    .padding(.leading)
                 Spacer()
                 
                 // Ürün değerlendirmesi
-                Text("⭐ \(String(format: "%.1f", product.rating))")
-                    .fontWeight(.semibold)
+                Button {
+                    withAnimation(.easeInOut(duration: 0.1)) { // .easeInOut ile geçiş animasyonu
+                        if let index = cartItems.addedProducts.firstIndex(where: { $0.id == product.id }) {
+                            cartItems.addedProducts.remove(at: index)
+                            print("Ürün sepetten çıkarıldı.")
+                        } else {
+                            cartItems.addedProducts.append(product)
+                            print("Ürün sepete eklendi.")
+                        }
+                    }
+                } label: {
+                        Image(systemName: isInCart(product: product) ? "cart.badge.minus" : "cart.badge.plus")
+                        .foregroundColor(.primary)
+                            .font(.title3)
+                            .bold()
+                    }
+                    .padding(.trailing)
             }
             .padding()
         }
@@ -84,7 +107,17 @@ struct ProductCardView: View {
     func isFavorite(product: Product) -> Bool {
         return favoriteItems.favoriteProducts.contains(where: { $0.id == product.id })
     }
+    
+    func isInCart(product: Product) -> Bool {
+        return cartItems.addedProducts.contains(where: { $0.id == product.id })
+    }
 
     
+}
+
+#Preview {
+    // Burada bir Product nesnesi oluşturmalısınız
+    let sampleProduct = Product(id: 1, title: "Sample Product", price: 19.99, thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png", rating: 3.3)
+    ProductCardView(product: sampleProduct, favoriteItems: FavoritedProducts(), cartItems: AddToCard())
 }
 

@@ -10,10 +10,11 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var dao = ProductsDao()
     @StateObject var favoriteItems = FavoritedProducts()
+    @StateObject var cartItems = AddToCard()
     
     var body: some View {
         TabView {
-            ProductsListView(favoriteItems: favoriteItems) // favoriteProducts'u buradan geçiriyoruz
+            ProductsListView(favoriteItems: favoriteItems,cartItems: cartItems ) // favoriteProducts'u buradan geçiriyoruz
                 .tabItem {
                     Label("Products", systemImage: "list.bullet")
                 }
@@ -25,7 +26,7 @@ struct ContentView: View {
                          dao.fetchData()
                 }
 
-            Text("Cart")
+            CartView(cartItem: cartItems)
                 .tabItem {
                     Label("Cart", systemImage: "cart")
                 }

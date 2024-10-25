@@ -15,3 +15,7 @@ struct ProductsResponse: Codable {
 class FavoritedProducts: ObservableObject {
     @Published var favoriteProducts : [Product] = []
 }
+
+class AddToCard : ObservableObject {
+    @Published var addedProducts : [Product] = []
+}
