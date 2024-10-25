@@ -9,7 +9,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct ProductCardView: View {
-    @Binding var product: Product// Product nesnesi parametre olarak alınıyor
+    var product: Product// Product nesnesi parametre olarak alınıyor
     @ObservedObject var favoriteItems: FavoritedProducts
     @State var isFavorite: Bool = false
     var body: some View {

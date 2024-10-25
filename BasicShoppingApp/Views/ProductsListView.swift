@@ -10,41 +10,48 @@ import SwiftUI
 struct ProductsListView: View {
     @StateObject var dao = ProductsDao()
     @ObservedObject var favoriteItems: FavoritedProducts
+    @State var searchText: String = ""
+    
+    var filteredProducts: [Product] {
+        guard !searchText.isEmpty else { return dao.products }
+        return dao.products.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+    }
+    
     var body: some View {
-        NavigationView{
-            ScrollView{
-                VStack{
-                    let numberOfRows = dao.products.count / 2
+        NavigationView {
+            ScrollView {
+                VStack {
+                    let numberOfRows = (filteredProducts.count + 1) / 2  // Filtrelenmiş ürün sayısına göre satır sayısını belirliyoruz
 
                     if numberOfRows > 0 {
                         ForEach(0..<numberOfRows, id: \.self) { row in
                             let startIndex = row * 2
-                            let endIndex = min(startIndex + 1, dao.products.count - 1)
-                            
+                            let endIndex = min(startIndex + 1, filteredProducts.count - 1)
                             HStack {
-                                ForEach(startIndex...endIndex, id: \.self) { index in
-                                    ProductCardView(product: $dao.products[index], favoriteItems: favoriteItems)
+                                    ForEach(startIndex...endIndex, id: \.self) { index in
+                                        ProductCardView(product: filteredProducts[index], favoriteItems: favoriteItems)
+                                            .frame(maxWidth: .infinity)
                                 }
                             }
                         }
-                    }
-
-                    else{
-                        ProgressView("Loading Products...")
+                    } else {
+                        ContentUnavailableView.search(text: searchText)
                     }
                     
-                }.navigationTitle("Products")
+                }
+                .navigationTitle("Products")
                 .onAppear {
                     if dao.products.isEmpty && favoriteItems.favoriteProducts.isEmpty {
                         dao.fetchData()
                     }
                 }
             }
+            .searchable(text: $searchText, prompt: "Search products...")
         }
     }
 }
 
-
 #Preview {
     ProductsListView(favoriteItems: FavoritedProducts())
 }
+
