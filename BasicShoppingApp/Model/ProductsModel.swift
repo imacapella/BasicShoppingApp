@@ -19,3 +19,7 @@ class FavoritedProducts: ObservableObject {
 class AddToCard : ObservableObject {
     @Published var addedProducts : [Product] = []
 }
+
+class CardDetailView : ObservableObject {
+    @Published var cardDetail : [Product] = []
+}

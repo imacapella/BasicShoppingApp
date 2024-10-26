@@ -22,23 +22,28 @@ struct ProductsListView: View {
         NavigationView {
             ScrollView {
                 VStack {
-                    let numberOfRows = (filteredProducts.count + 1) / 2  // Filtrelenmiş ürün sayısına göre satır sayısını belirliyoruz
+                    let productsInPairs = Array(stride(from: 0, to: filteredProducts.count, by: 2))
 
-                    if numberOfRows > 0 {
-                        ForEach(0..<numberOfRows, id: \.self) { row in
-                            let startIndex = row * 2
-                            let endIndex = min(startIndex + 1, filteredProducts.count - 1)
+                    if !filteredProducts.isEmpty {
+                        ForEach(productsInPairs, id: \.self) { index in
                             HStack {
-                                    ForEach(startIndex...endIndex, id: \.self) { index in
-                                        ProductCardView(product: filteredProducts[index], favoriteItems: favoriteItems, cartItems: cartItems)
+                                NavigationLink(destination: ProductDetailView(product: filteredProducts[index], cart: cartItems)) {
+                                    ProductCardView(product: filteredProducts[index], favoriteItems: favoriteItems, cartItems: cartItems)
+                                        .frame(maxWidth: .infinity)
+                                }
+                                
+                                
+                                if index + 1 < filteredProducts.count {
+                                    NavigationLink(destination: ProductDetailView(product: filteredProducts[index + 1], cart: cartItems)) {
+                                        ProductCardView(product: filteredProducts[index + 1], favoriteItems: favoriteItems, cartItems: cartItems)
                                             .frame(maxWidth: .infinity)
+                                    }
                                 }
                             }
                         }
                     } else {
                         ContentUnavailableView.search(text: searchText)
                     }
-                    
                 }
                 .navigationTitle("Products")
                 .onAppear {
@@ -51,6 +56,7 @@ struct ProductsListView: View {
         }
     }
 }
+
 
 #Preview {
     ProductsListView(favoriteItems: FavoritedProducts(), cartItems: AddToCard())
