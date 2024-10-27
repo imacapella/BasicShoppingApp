@@ -11,7 +11,7 @@ import SDWebImageSwiftUI
 struct ProductCardView: View {
     var product: Product// Product nesnesi parametre olarak alınıyor
     @ObservedObject var favoriteItems: FavoritedProducts
-    @ObservedObject var cartItems: AddToCard
+    @ObservedObject var cartItems: CartItems
     @State var isFavorite: Bool = false
     var body: some View {
         VStack {
@@ -47,19 +47,22 @@ struct ProductCardView: View {
             //Spacer()
             
             // Ürün görseli
-            WebImage(url: URL(string: product.thumbnail))
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
-                .padding(.horizontal)
-            
+            NavigationLink(destination: ProductDetailView(product: product, cart: cartItems)) {
+                WebImage(url: URL(string: product.thumbnail))
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 80, height: 80)
+                    .padding(.horizontal)
+            }
             VStack(alignment: .leading) {
                 // Ürün adı
-                Text(product.title)
-                    .font(.title2)
-                    .bold()
-                    .padding(.horizontal)
-                
+                NavigationLink(destination: ProductDetailView(product: product, cart: cartItems)) {
+                    Text(product.title)
+                        .font(.title2)
+                        .bold()
+                        .foregroundStyle(Color.black)
+                        .padding(.horizontal)
+                }
                 // Ürün açıklaması
                 Text("dadawdwadd")
                     .font(.title3)
@@ -76,16 +79,16 @@ struct ProductCardView: View {
                 // Ürün değerlendirmesi
                 Button {
                     withAnimation(.easeInOut(duration: 0.1)) { // .easeInOut ile geçiş animasyonu
-                        if let index = cartItems.addedProducts.firstIndex(where: { $0.id == product.id }) {
-                            cartItems.addedProducts.remove(at: index)
+                        if let index = cartItems.cartItems.firstIndex(where: { $0.id == product.id }) {
+                            cartItems.cartItems.remove(at: index)
                             print("Ürün sepetten çıkarıldı.")
                         } else {
-                            cartItems.addedProducts.append(product)
+                            cartItems.cartItems.append(product)
                             print("Ürün sepete eklendi.")
                         }
                     }
                 } label: {
-                        Image(systemName: isInCart(product: product) ? "cart.badge.minus" : "cart.badge.plus")
+                        Image(systemName: isInCart(product: product) ? "trash" : "cart.badge.plus")
                         .foregroundColor(.primary)
                             .font(.title3)
                             .bold()
@@ -109,7 +112,7 @@ struct ProductCardView: View {
     }
     
     func isInCart(product: Product) -> Bool {
-        return cartItems.addedProducts.contains(where: { $0.id == product.id })
+        return cartItems.cartItems.contains(where: { $0.id == product.id })
     }
 
     
@@ -117,7 +120,7 @@ struct ProductCardView: View {
 
 #Preview {
     // Burada bir Product nesnesi oluşturmalısınız
-    let sampleProduct = Product(id: 1, title: "Sample Product", price: 19.99, thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png", rating: 3.3)
-    ProductCardView(product: sampleProduct, favoriteItems: FavoritedProducts(), cartItems: AddToCard())
+    let sampleProduct = Product(id: 1, title: "Sample Product", price: 19.99, thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png", rating: 3.3, warrantInformation: "3 weeks", shippingInformation: "Free Shipping", availabilityStatus: "In Stock")
+    ProductCardView(product: sampleProduct, favoriteItems: FavoritedProducts(), cartItems: CartItems())
 }
 

@@ -6,6 +6,9 @@ struct Product: Codable, Hashable, Identifiable {
     let price: Double
     let thumbnail: String
     let rating: Double
+    let warrantInformation: String
+    let shippingInformation: String
+    let availabilityStatus: String
 }
 
 struct ProductsResponse: Codable {
@@ -16,8 +19,9 @@ class FavoritedProducts: ObservableObject {
     @Published var favoriteProducts : [Product] = []
 }
 
-class AddToCard : ObservableObject {
-    @Published var addedProducts : [Product] = []
+class CartItems : ObservableObject {
+    @Published var quantity : Int = 0
+    @Published var cartItems : [Product] = []
 }
 
 class CardDetailView : ObservableObject {

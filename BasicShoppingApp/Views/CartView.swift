@@ -8,7 +8,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct CartView: View {
-    @ObservedObject var cartItem: AddToCard
+    @ObservedObject var cartItem: CartItems
     var product: Product?
     @State var totalPrice: Double = 0
 
@@ -17,13 +17,13 @@ struct CartView: View {
             ZStack {
                 ScrollView {
                     VStack {
-                        ForEach(Array(cartItem.addedProducts.enumerated()), id: \.element.id) { index, product in
+                        ForEach(Array(cartItem.cartItems.enumerated()), id: \.element.id) { index, product in
                             CartCardView(cartItem: cartItem, product: product)
                                 .padding(.horizontal) // Yatayda boşluk ekliyoruz
                                 .padding(.vertical, 8) // Kartlar arası dikey boşluk
                                 .animation(.bouncy)
                             
-                            if index != cartItem.addedProducts.count - 1 {
+                            if index != cartItem.cartItems.count - 1 {
                                 Divider()
                                     .padding(.vertical, 5)
                                     .padding(.horizontal)
@@ -72,19 +72,19 @@ struct CartView: View {
             .onAppear {
                 calculateTotalPrice() // Görünüm yüklendiğinde toplam fiyatı hesapla
             }
-            .onChange(of: cartItem.addedProducts) { _ in
+            .onChange(of: cartItem.cartItems) { _ in
                 calculateTotalPrice() // Görünüm yüklendiğinde toplam fiyatı hesapla
             }
         }
     }
 
     func calculateTotalPrice() {
-        totalPrice = cartItem.addedProducts.reduce(0) { $0 + ($1.price ?? 0.0) } // Her ürünün fiyatını topla
+        totalPrice = cartItem.cartItems.reduce(0) { $0 + ($1.price ?? 0.0) } // Her ürünün fiyatını topla
     }
 }
 
 struct CartCardView: View {
-    @ObservedObject var cartItem: AddToCard
+    @ObservedObject var cartItem: CartItems
     var product: Product?
 
     var body: some View {
@@ -114,8 +114,8 @@ struct CartCardView: View {
                         Spacer()
 
                         Button {
-                            if let index = cartItem.addedProducts.firstIndex(where: { $0.id == product.id }) {
-                                cartItem.addedProducts.remove(at: index)
+                            if let index = cartItem.cartItems.firstIndex(where: { $0.id == product.id }) {
+                                cartItem.cartItems.remove(at: index)
                             }
                         } label: {
                             Image(systemName: "cart.badge.minus")
@@ -157,5 +157,5 @@ struct CartEmptyView: View {
 }
 
 #Preview {
-    CartView(cartItem: AddToCard())
+    CartView(cartItem: CartItems())
 }

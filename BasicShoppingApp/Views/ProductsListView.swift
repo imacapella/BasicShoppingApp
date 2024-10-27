@@ -10,7 +10,7 @@ import SwiftUI
 struct ProductsListView: View {
     @StateObject var dao = ProductsDao()
     @ObservedObject var favoriteItems: FavoritedProducts
-    @ObservedObject var cartItems: AddToCard
+    @ObservedObject var cartItems: CartItems
     @State var searchText: String = ""
     
     var filteredProducts: [Product] {
@@ -27,17 +27,12 @@ struct ProductsListView: View {
                     if !filteredProducts.isEmpty {
                         ForEach(productsInPairs, id: \.self) { index in
                             HStack {
-                                NavigationLink(destination: ProductDetailView(product: filteredProducts[index], cart: cartItems)) {
                                     ProductCardView(product: filteredProducts[index], favoriteItems: favoriteItems, cartItems: cartItems)
                                         .frame(maxWidth: .infinity)
-                                }
-                                
-                                
+
                                 if index + 1 < filteredProducts.count {
-                                    NavigationLink(destination: ProductDetailView(product: filteredProducts[index + 1], cart: cartItems)) {
                                         ProductCardView(product: filteredProducts[index + 1], favoriteItems: favoriteItems, cartItems: cartItems)
                                             .frame(maxWidth: .infinity)
-                                    }
                                 }
                             }
                         }
@@ -59,6 +54,6 @@ struct ProductsListView: View {
 
 
 #Preview {
-    ProductsListView(favoriteItems: FavoritedProducts(), cartItems: AddToCard())
+    ProductsListView(favoriteItems: FavoritedProducts(), cartItems: CartItems())
 }
 
