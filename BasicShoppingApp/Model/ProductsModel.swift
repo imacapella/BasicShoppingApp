@@ -6,7 +6,7 @@ struct Product: Codable, Hashable, Identifiable {
     let price: Double
     let thumbnail: String
     let rating: Double
-    let warrantInformation: String
+    let warrantyInformation: String
     let shippingInformation: String
     let availabilityStatus: String
 }

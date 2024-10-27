@@ -112,19 +112,9 @@ struct CartCardView: View {
                         }
 
                         Spacer()
+                        
+                        IncreaseDecreaseBtn(product: product, cart: cartItem)
 
-                        Button {
-                            if let index = cartItem.cartItems.firstIndex(where: { $0.id == product.id }) {
-                                cartItem.cartItems.remove(at: index)
-                            }
-                        } label: {
-                            Image(systemName: "cart.badge.minus")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 30, height: 30)
-                                .foregroundColor(.blue).opacity(0.8)
-                                .padding(.trailing, 8)
-                        }
                     }
                 }
                 .padding(.vertical, 10) // Kart içeriği için dikeyde biraz boşluk

@@ -10,11 +10,17 @@ struct FavoritesView: View {
             ZStack {
                 ScrollView {
                     VStack {
-                        ForEach(favoriteItems.favoriteProducts) { product in
-                            FavoritesCardView(favoriteItems: favoriteItems, product: product)
-                                .padding(.horizontal) // Yatayda boşluk ekliyoruz
-                                .padding(.vertical, 8) // Kartlar arası dikey boşluk
-                                .animation(.bouncy)
+                        if favoriteItems.favoriteProducts.isEmpty{
+                            FavoritesEmptyView()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity) // Bu satırı ekleyin
+                        }
+                        else{
+                            ForEach(favoriteItems.favoriteProducts) { product in
+                                FavoritesCardView(favoriteItems: favoriteItems, product: product)
+                                    .padding(.horizontal) // Yatayda boşluk ekliyoruz
+                                    .padding(.vertical, 8) // Kartlar arası dikey boşluk
+                                    .animation(.bouncy)
+                            }
                         }
                     }
                 }
@@ -83,4 +89,45 @@ struct FavoritesCardView: View {
             )
         }
     }
+}
+
+struct FavoritesEmptyView: View {
+    var body: some View {
+        VStack {
+            Spacer() // Üst boşluk
+            VStack {
+                Image(.heartAdd)
+                    .resizable()
+                    .opacity(0)
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .padding()
+                    .overlay{
+                        Color.white
+                            .mask(Image(.heartAdd)
+                                .resizable()
+                                  .scaledToFit()
+                                  .frame(width: 100, height: 100)
+                                  .padding()
+                            
+                            )
+                        
+                    }
+
+                Text("You have no favorite products yet.")
+                    .font(.headline)
+
+                Text("Add more goods to your Favorites!")
+                    .font(.subheadline)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
+            Spacer() // Alt boşluk
+        }
+        .padding()
+    }
+}
+
+#Preview {
+    FavoritesEmptyView()
 }

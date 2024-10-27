@@ -120,7 +120,7 @@ struct ProductCardView: View {
 
 #Preview {
     // Burada bir Product nesnesi oluşturmalısınız
-    let sampleProduct = Product(id: 1, title: "Sample Product", price: 19.99, thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png", rating: 3.3, warrantInformation: "3 weeks", shippingInformation: "Free Shipping", availabilityStatus: "In Stock")
+    let sampleProduct = Product(id: 1, title: "Sample Product", price: 19.99, thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png", rating: 3.3, warrantyInformation: "3 weeks", shippingInformation: "Free Shipping", availabilityStatus: "In Stock")
     ProductCardView(product: sampleProduct, favoriteItems: FavoritedProducts(), cartItems: CartItems())
 }
 
