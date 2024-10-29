@@ -11,6 +11,12 @@ struct Product: Codable, Hashable, Identifiable {
     let availabilityStatus: String
 }
 
+struct CartItem: Identifiable, Codable {
+    var id: UUID
+    var product: Product
+    var quantity: Int
+}
+
 struct ProductsResponse: Codable {
     let products: [Product]
 }
@@ -19,9 +25,11 @@ class FavoritedProducts: ObservableObject {
     @Published var favoriteProducts : [Product] = []
 }
 
-class CartItems : ObservableObject {
-    @Published var quantity : Int = 0
-    @Published var cartItems : [Product] = []
+class Cart : ObservableObject {
+    @Published var cartItems : [CartItem]
+    init() {
+        self.cartItems = []
+    }
 }
 
 class CardDetailView : ObservableObject {

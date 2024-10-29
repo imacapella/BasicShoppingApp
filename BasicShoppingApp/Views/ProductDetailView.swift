@@ -5,7 +5,7 @@ import SDWebImageSwiftUI
 
 struct ProductDetailView: View {
     var product: Product
-    @ObservedObject var cart: CartItems
+    @ObservedObject var cart: Cart
 
     var body: some View {
         GeometryReader { geometry in
@@ -112,5 +112,5 @@ struct ProductDetailView: View {
 }
 
 #Preview {
-    ProductDetailView(product: .init(id: 1, title: "Red Lipstick", price: 100, thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Red%20Lipstick/thumbnail.png", rating: 4.5, warrantyInformation: "3 Weeks", shippingInformation: "Tomorrow", availabilityStatus: "In Stock"), cart: CartItems())
+    ProductDetailView(product: .init(id: 1, title: "Red Lipstick", price: 100, thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Red%20Lipstick/thumbnail.png", rating: 4.5, warrantyInformation: "3 Weeks", shippingInformation: "Tomorrow", availabilityStatus: "In Stock"), cart: Cart())
 }

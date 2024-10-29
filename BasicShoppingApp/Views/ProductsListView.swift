@@ -10,7 +10,7 @@ import SwiftUI
 struct ProductsListView: View {
     @StateObject var dao = ProductsDao()
     @ObservedObject var favoriteItems: FavoritedProducts
-    @ObservedObject var cartItems: CartItems
+    @ObservedObject var cartItems: Cart
     @State var searchText: String = ""
     
     var filteredProducts: [Product] {
@@ -54,6 +54,6 @@ struct ProductsListView: View {
 
 
 #Preview {
-    ProductsListView(favoriteItems: FavoritedProducts(), cartItems: CartItems())
+    ProductsListView(favoriteItems: FavoritedProducts(), cartItems: Cart())
 }
 

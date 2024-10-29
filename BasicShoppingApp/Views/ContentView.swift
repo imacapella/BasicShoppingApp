@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var dao = ProductsDao()
     @StateObject var favoriteItems = FavoritedProducts()
-    @StateObject var cartItems = CartItems()
+    @StateObject var cartItems = Cart()
     
     var body: some View {
         TabView {

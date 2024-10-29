@@ -10,7 +10,7 @@ struct IncreaseDecreaseBtn: View{
     @State private var showAlert = false // Alert için state değişkeni
     @State private var quantity = 1
     var product: Product
-    @ObservedObject var cart: CartItems
+    @ObservedObject var cart: Cart
     
     var body: some View {
         HStack {
@@ -22,6 +22,7 @@ struct IncreaseDecreaseBtn: View{
                     }
                 }
             }) {
+                Spacer()
                 Image(systemName: "minus")
                     .resizable()
                     .frame(width: 12, height: 12)
@@ -52,6 +53,7 @@ struct IncreaseDecreaseBtn: View{
                     .padding(10)
                     .foregroundColor(.black)
                     .background(Circle().fill(Color.white).stroke(Color.black, lineWidth: 1))
+                Spacer()
             }
             
         }
