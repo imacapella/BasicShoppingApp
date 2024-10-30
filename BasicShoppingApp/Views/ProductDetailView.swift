@@ -87,11 +87,16 @@ struct ProductDetailView: View {
                 }
                 .padding(.horizontal)
                 
-                if cart.cartItems.contains(product) {
-                    IncreaseDecreaseBtn(product: product, cart: cart)
-                    
+                if let existingCartItem = cart.cartItems.first(where: { $0.product.id == product.id }) {
+                    // Ürün zaten sepette varsa, IncreaseDecreaseBtn bileşenini gösteriyoruz.
+                    IncreaseDecreaseBtn(product: existingCartItem.product, cart: cart)
                 } else {
-                    Button(action: { cart.cartItems.append(product); cart.quantity+=1 }) {
+                    Button(action: {
+                        // Ürün sepette yoksa, sepete yeni bir ürün ekliyoruz.
+                        var newCartItem = CartItem(id: product.id, product: product, quantity: 1) // Yeni CartItem nesnesi oluştur
+                        cart.cartItems.append(newCartItem) // Bu yeni nesneyi cartItems listesine ekle
+                        newCartItem.quantity+=1// Toplam ürün sayısını artır
+                    }) {
                         HStack {
                             Image(systemName: "cart.badge.plus")
                                 .foregroundColor(.white)
@@ -106,11 +111,25 @@ struct ProductDetailView: View {
                     }
                     .padding()
                 }
+
             }
         }
     }
 }
 
 #Preview {
-    ProductDetailView(product: .init(id: 1, title: "Red Lipstick", price: 100, thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Red%20Lipstick/thumbnail.png", rating: 4.5, warrantyInformation: "3 Weeks", shippingInformation: "Tomorrow", availabilityStatus: "In Stock"), cart: Cart())
+    // Burada bir Product nesnesi oluşturuyoruz
+    let sampleProduct = Product(
+        id: 2, // UUID olarak değiştirildi
+        title: "Sample Product",
+        price: 19.99,
+        thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png",
+        rating: 3.3,
+        warrantyInformation: "3 weeks",
+        shippingInformation: "Free Shipping",
+        availabilityStatus: "In Stock"
+    )
+    
+    ProductDetailView(product: sampleProduct, cart: Cart())
 }
+

@@ -27,11 +27,11 @@ struct ProductsListView: View {
                     if !filteredProducts.isEmpty {
                         ForEach(productsInPairs, id: \.self) { index in
                             HStack {
-                                    ProductCardView(product: filteredProducts[index], favoriteItems: favoriteItems, cartItems: cartItems)
+                                    ProductCardView(product: filteredProducts[index], favoriteItems: favoriteItems, cart: cartItems)
                                         .frame(maxWidth: .infinity)
 
                                 if index + 1 < filteredProducts.count {
-                                        ProductCardView(product: filteredProducts[index + 1], favoriteItems: favoriteItems, cartItems: cartItems)
+                                        ProductCardView(product: filteredProducts[index + 1], favoriteItems: favoriteItems, cart: cartItems)
                                             .frame(maxWidth: .infinity)
                                 }
                             }

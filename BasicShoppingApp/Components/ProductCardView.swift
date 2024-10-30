@@ -11,7 +11,7 @@ import SDWebImageSwiftUI
 struct ProductCardView: View {
     var product: Product// Product nesnesi parametre olarak alınıyor
     @ObservedObject var favoriteItems: FavoritedProducts
-    @ObservedObject var cartItems: Cart
+    @ObservedObject var cart: Cart
     @State var isFavorite: Bool = false
     var body: some View {
         VStack {
@@ -47,7 +47,7 @@ struct ProductCardView: View {
             //Spacer()
             
             // Ürün görseli
-            NavigationLink(destination: ProductDetailView(product: product, cart: cartItems)) {
+            NavigationLink(destination: ProductDetailView(product: product, cart: cart)) {
                 WebImage(url: URL(string: product.thumbnail))
                     .resizable()
                     .scaledToFit()
@@ -56,7 +56,7 @@ struct ProductCardView: View {
             }
             VStack(alignment: .leading) {
                 // Ürün adı
-                NavigationLink(destination: ProductDetailView(product: product, cart: cartItems)) {
+                NavigationLink(destination: ProductDetailView(product: product, cart: cart)) {
                     Text(product.title)
                         .font(.title2)
                         .bold()
@@ -79,11 +79,12 @@ struct ProductCardView: View {
                 // Ürün değerlendirmesi
                 Button {
                     withAnimation(.easeInOut(duration: 0.1)) { // .easeInOut ile geçiş animasyonu
-                        if let index = cartItems.cartItems.firstIndex(where: { $0.id == product.id }) {
-                            cartItems.cartItems.remove(at: index)
+                        if let index = cart.cartItems.firstIndex(where: { $0.product.id == product.id }) {
+                            cart.cartItems.remove(at: index)
                             print("Ürün sepetten çıkarıldı.")
                         } else {
-                            cartItems.cartItems.append(product)
+                            let newCartItem = CartItem(id: product.id, product: product, quantity: 1)
+                            cart.cartItems.append(newCartItem)
                             print("Ürün sepete eklendi.")
                         }
                     }
@@ -112,15 +113,24 @@ struct ProductCardView: View {
     }
     
     func isInCart(product: Product) -> Bool {
-        return cartItems.cartItems.contains(where: { $0.id == product.id })
+        return cart.cartItems.contains(where: { $0.id == product.id })
     }
 
     
 }
 
 #Preview {
-    // Burada bir Product nesnesi oluşturmalısınız
-    let sampleProduct = Product(id: 1, title: "Sample Product", price: 19.99, thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png", rating: 3.3, warrantyInformation: "3 weeks", shippingInformation: "Free Shipping", availabilityStatus: "In Stock")
-    ProductCardView(product: sampleProduct, favoriteItems: FavoritedProducts(), cartItems: Cart())
+    // Burada bir Product nesnesi oluşturuyoruz
+    let sampleProduct = Product(
+        id: 1, // UUID olarak değiştirildi
+        title: "Sample Product",
+        price: 19.99,
+        thumbnail: "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png",
+        rating: 3.3,
+        warrantyInformation: "3 weeks",
+        shippingInformation: "Free Shipping",
+        availabilityStatus: "In Stock"
+    )
+    
+    ProductCardView(product: sampleProduct, favoriteItems: FavoritedProducts(), cart: Cart())
 }
-

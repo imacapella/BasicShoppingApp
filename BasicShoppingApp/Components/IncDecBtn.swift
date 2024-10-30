@@ -8,17 +8,18 @@ import SwiftUI
 
 struct IncreaseDecreaseBtn: View{
     @State private var showAlert = false // Alert için state değişkeni
-    @State private var quantity = 1
     var product: Product
     @ObservedObject var cart: Cart
     
     var body: some View {
         HStack {
             Button(action: {
-                if quantity > 0 {
-                    quantity -= 1
-                    if quantity <= 0 {
-                        showAlert = true // Quantity 0’a inerse alert göster
+                if let index = cart.cartItems.firstIndex(where: { $0.product.id == product.id }) {
+                    if cart.cartItems[index].quantity > 0 {
+                        cart.cartItems[index].quantity -= 1
+                        if cart.cartItems[index].quantity <= 0 {
+                            showAlert = true // Quantity 0’a inerse alert göster
+                        }
                     }
                 }
             }) {
@@ -37,14 +38,14 @@ struct IncreaseDecreaseBtn: View{
                 Button("No", role: .cancel){}
             }
             
-            Text("\(quantity)")
+            Text("\(cart.cartItems.first?.quantity)")
                 .font(.title)
                 .padding()
                 .foregroundColor(.white)
             
             Button(action: {
-                if quantity >= 0 {
-                    quantity += 1
+                if let index = cart.cartItems.firstIndex(where: { $0.product.id == product.id }) {
+                    cart.cartItems[index].quantity += 1
                 }
             }) {
                 Image(systemName: "plus")
@@ -53,8 +54,8 @@ struct IncreaseDecreaseBtn: View{
                     .padding(10)
                     .foregroundColor(.black)
                     .background(Circle().fill(Color.white).stroke(Color.black, lineWidth: 1))
-                Spacer()
             }
+
             
         }
         

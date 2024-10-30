@@ -9,10 +9,11 @@ struct Product: Codable, Hashable, Identifiable {
     let warrantyInformation: String
     let shippingInformation: String
     let availabilityStatus: String
+    
 }
 
-struct CartItem: Identifiable, Codable {
-    var id: UUID
+struct CartItem: Identifiable, Codable, Equatable {
+    var id: Int
     var product: Product
     var quantity: Int
 }

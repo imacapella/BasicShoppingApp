@@ -9,35 +9,30 @@ import SDWebImageSwiftUI
 
 struct CartView: View {
     @ObservedObject var cart: Cart
-    var product: Product?
     @State var totalPrice: Double = 0
 
     var body: some View {
         NavigationView {
             ZStack {
                 ScrollView {
-                    VStack {
+                    VStack(spacing: 0) { // spacing'i 0 yaparak aralarındaki boşluğu kaldırıyoruz
                         ForEach(cart.cartItems) { item in
-                            CartCardView(cartItem: item, cart: cart)
-                                //.padding(.horizontal)
-                                //.padding(.vertical, 8)
-                                //.animation(.bouncy)
+                            CartCardView(cart: cart, cartItem: item)
+                                .padding(.horizontal) // Yalnızca yatay padding bırakıyoruz
+                                .animation(.bouncy)
                             
                             if cart.cartItems.last?.id != item.id {
                                 Divider()
                                     .padding(.vertical, 5)
-                                    .padding(.horizontal)
                             }
                         }
-                        Spacer()
                     }
-                    .padding(.bottom, 100)
                 }
 
                 VStack {
                     Spacer()
                     if totalPrice != 0 {
-                        HStack(alignment:.bottom) {
+                        HStack {
                             Button {
                                 print("Purchase process...")
                             } label: {
@@ -61,7 +56,6 @@ struct CartView: View {
                         .padding()
                     } else {
                         CartEmptyView()
-                        Spacer()
                     }
                 }
             }
@@ -69,7 +63,7 @@ struct CartView: View {
             .onAppear {
                 calculateTotalPrice()
             }
-            .onChange(of: cart.cartItems) { _ in
+            .onChange(of: Array(cart.cartItems)) { _ in
                 calculateTotalPrice()
             }
         }
@@ -83,40 +77,38 @@ struct CartView: View {
 }
 
 struct CartCardView: View {
-    var cartItem: CartItems
     @ObservedObject var cart: Cart
+    var cartItem: CartItem
 
     var body: some View {
-        ZStack {
-            VStack {
-                HStack {
-                    WebImage(url: URL(string: cartItem.product.thumbnail))
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 50, height: 50)
-                        .padding(.trailing, 8)
+        HStack {
+            WebImage(url: URL(string: cartItem.product.thumbnail))
+                .resizable()
+                .scaledToFit()
+                .frame(width: 50, height: 50)
+                .padding(.trailing, 8)
 
-                    VStack(alignment: .leading) {
-                        Text(cartItem.product.title.count > 20 ? "\(cartItem.product.title.prefix(14))..." : cartItem.product.title)
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading) {
+                Text(cartItem.product.title.count > 20 ? "\(cartItem.product.title.prefix(14))..." : cartItem.product.title)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
 
-                        Text("$\(cartItem.product.price, specifier: "%.2f")")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                    }
-                    Spacer()
-                    IncreaseDecreaseBtn(cartItem: cartItem, cart: cart)
-                }
-                .padding(.vertical, 10)
+                Text("$\(cartItem.product.price, specifier: "%.2f")")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
             }
-            .padding(10)
+            Spacer()
+
+            // Arttır/azalt butonu
+            IncreaseDecreaseBtn(product: cartItem.product, cart: cart)
         }
+        .padding(10) // Tüm kart için tek bir padding
     }
 }
+
+
 
 struct CartEmptyView: View {
     var body: some View {
