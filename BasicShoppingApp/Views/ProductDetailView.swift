@@ -6,7 +6,8 @@ import SDWebImageSwiftUI
 struct ProductDetailView: View {
     var product: Product
     @ObservedObject var cart: Cart
-
+    @State private var showAlert: Bool = false
+    @State private var selectedItem: CartItem?
     var body: some View {
         GeometryReader { geometry in
             VStack(alignment: .leading, spacing: 16) {
@@ -89,7 +90,7 @@ struct ProductDetailView: View {
                 
                 if let existingCartItem = cart.cartItems.first(where: { $0.product.id == product.id }) {
                     // Ürün zaten sepette varsa, IncreaseDecreaseBtn bileşenini gösteriyoruz.
-                    IncreaseDecreaseBtn(product: existingCartItem.product, cart: cart)
+                    IncreaseDecreaseBtn(product: existingCartItem.product, cart: cart, showAlert: $showAlert, selectedItem: $selectedItem, cartItem: existingCartItem)
                 } else {
                     Button(action: {
                         // Ürün sepette yoksa, sepete yeni bir ürün ekliyoruz.

@@ -8,7 +8,8 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct CartView: View {
-    @State var showAlert: Bool = false
+    @State private var showAlert: Bool = false
+    @State private var selectedItem: CartItem?  // Hangi ürünün silineceğini belirlemek için
     @ObservedObject var cart: Cart
     private var totalPrice: Double {
         cart.cartItems.reduce(0) { result, item in
@@ -18,27 +19,29 @@ struct CartView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-            ZStack {
-                    VStack(spacing: 0) {
-                        ForEach(cart.cartItems) { item in
-                            CartCardView(cart: cart, cartItem: item)
-                                .padding(.horizontal)
-                                .animation(.bouncy)
-                                .alert("Are You Sure", isPresented: $showAlert) {
-                                    Button("Remove", role: .destructive){
-                                        if let index = cart.cartItems.firstIndex(where: { $0.id == item.id }) {
-                                            cart.cartItems.remove(at: index)
-                                        }
-                                    }
-                                    Button("No", role: .cancel){}
-                                }
-                            DivideProducts(cart: cart, item: item)
+            VStack {
+                if cart.cartItems.isEmpty {
+                    CartEmptyView()
+                } else {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ForEach(cart.cartItems) { item in
+                                CartProductView(cart: cart, cartItem: item, showAlert: $showAlert, selectedItem: $selectedItem)
+                                    .padding()
+                                    .animation(.bouncy)
+                            }
                         }
                         Spacer()
-                        HStack(alignment: .bottom){
-                            CheckoutBtn(totalPrice: totalPrice)
+                        CheckoutBtn(cart: cart, totalPrice: totalPrice)
+                            .padding()
+                    }
+                    .alert("Are You Sure?", isPresented: $showAlert) {
+                        Button("Remove", role: .destructive) {
+                            if let item = selectedItem, let index = cart.cartItems.firstIndex(where: { $0.id == item.id }) {
+                                cart.cartItems.remove(at: index)
+                            }
                         }
+                        Button("No", role: .cancel) {}
                     }
                 }
             }
@@ -47,9 +50,12 @@ struct CartView: View {
     }
 }
 
-struct CartCardView: View {
+
+struct CartProductView: View {
     @ObservedObject var cart: Cart
     var cartItem: CartItem
+    @Binding var showAlert: Bool
+    @Binding var selectedItem: CartItem?
 
     var body: some View {
         HStack {
@@ -60,7 +66,8 @@ struct CartCardView: View {
                 .padding(.trailing, 8)
 
             VStack(alignment: .leading) {
-                Text(cartItem.product.title.count > 20 ? "\(cartItem.product.title.prefix(14))..." : cartItem.product.title)
+                Text(cartItem.product.title)
+                    .frame(width: 150, alignment: .leading)
                     .font(.title3)
                     .fontWeight(.semibold)
                     .lineLimit(1)
@@ -70,15 +77,14 @@ struct CartCardView: View {
                     .font(.subheadline)
                     .fontWeight(.semibold)
             }
-            //Spacer()
+            Spacer()
 
             // Arttır/azalt butonu
-            IncreaseDecreaseBtn(product: cartItem.product, cart: cart)
+            IncreaseDecreaseBtn(product: cartItem.product, cart: cart, showAlert: $showAlert, selectedItem: $selectedItem, cartItem: cartItem)
         }
-        .padding(10) // Tüm kart için tek bir padding
+        .padding(10)
     }
 }
-
 
 
 struct CartEmptyView: View {
@@ -114,9 +120,12 @@ struct DivideProducts : View {
 }
 
 struct CheckoutBtn: View {
+    @ObservedObject var cart: Cart
     var totalPrice: Double
     var body: some View {
-            if totalPrice != 0 {
+        if cart.cartItems.isEmpty{
+            Text("blabla")
+            } else {
                 HStack {
                     Button {
                         print("Purchase process...")
@@ -139,8 +148,6 @@ struct CheckoutBtn: View {
                 .frame(maxWidth: .infinity, minHeight: 70)
                 .background(RoundedRectangle(cornerRadius: 15).fill(Color.blue).shadow(radius: 10))
                 .padding()
-            } else {
-                Text("blabla")
             }
         }
     }

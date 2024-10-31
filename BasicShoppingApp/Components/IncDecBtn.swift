@@ -6,51 +6,53 @@
 //
 import SwiftUI
 
-struct IncreaseDecreaseBtn: View{
+struct IncreaseDecreaseBtn: View {
     var product: Product
     @ObservedObject var cart: Cart
-    
+    @Binding var showAlert: Bool
+    @Binding var selectedItem: CartItem?
+    var cartItem: CartItem  // Eklenen cartItem
+
     var body: some View {
         HStack {
             Button(action: {
                 if let index = cart.cartItems.firstIndex(where: { $0.product.id == product.id }) {
                     if cart.cartItems[index].quantity > 0 {
-                        cart.cartItems[index].quantity -= 1
-                        if cart.cartItems[index].quantity <= 0 {
-                            showAlert = true // Quantity 0’a inerse alert göster
+                        if cart.cartItems[index].quantity - 1 == 0 {
+                            selectedItem = cartItem // Silinmek üzere seçilen öğeyi belirtiyoruz
+                            showAlert = true       // alert'i tetikliyoruz
+                        } else {
+                            cart.cartItems[index].quantity -= 1
                         }
                     }
                 }
             }) {
                 Spacer()
-                Image(systemName: "minus")
+                Image("minus-square")
                     .resizable()
-                    .frame(width: 12, height: 12)
+                    .frame(width: 40, height: 40)
                     .padding(10)
-                    .foregroundColor(.black)
-                    .background(Circle().fill(Color.white).stroke(Color.black, lineWidth: 1))
+                    .foregroundColor(.white)
             }
             
-            Text("\(cart.cartItems.first?.quantity)")
-                .font(.title)
-                .padding()
-                .foregroundColor(.white)
-            
+            if let index = cart.cartItems.firstIndex(where: { $0.product.id == product.id }) {
+                Text("\(cart.cartItems[index].quantity)")
+                    .font(.title)
+                    .padding()
+                    .foregroundColor(.white)
+            }
             Button(action: {
                 if let index = cart.cartItems.firstIndex(where: { $0.product.id == product.id }) {
                     cart.cartItems[index].quantity += 1
                 }
             }) {
-                Image(systemName: "plus")
+                Image("add-square")
                     .resizable()
-                    .frame(width: 12, height: 12)
+                    .frame(width: 40, height: 40)
                     .padding(10)
-                    .foregroundColor(.black)
-                    .background(Circle().fill(Color.white).stroke(Color.black, lineWidth: 1))
+                    .foregroundColor(.white)
+                Spacer()
             }
-
-            
         }
-        
     }
 }
