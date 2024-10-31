@@ -7,7 +7,6 @@
 import SwiftUI
 
 struct IncreaseDecreaseBtn: View{
-    @State private var showAlert = false // Alert için state değişkeni
     var product: Product
     @ObservedObject var cart: Cart
     
@@ -30,12 +29,6 @@ struct IncreaseDecreaseBtn: View{
                     .padding(10)
                     .foregroundColor(.black)
                     .background(Circle().fill(Color.white).stroke(Color.black, lineWidth: 1))
-            }
-            .alert("Are You Sure", isPresented: $showAlert) {
-                Button("Remove", role: .destructive){if let index = cart.cartItems.firstIndex(where: { $0.id == product.id }) {
-                    cart.cartItems.remove(at: index)}
-                }
-                Button("No", role: .cancel){}
             }
             
             Text("\(cart.cartItems.first?.quantity)")

@@ -8,70 +8,41 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct CartView: View {
+    @State var showAlert: Bool = false
     @ObservedObject var cart: Cart
-    @State var totalPrice: Double = 0
+    private var totalPrice: Double {
+        cart.cartItems.reduce(0) { result, item in
+            result + (item.product.price * Double(item.quantity))
+        }
+    }
 
     var body: some View {
         NavigationView {
+            ScrollView {
             ZStack {
-                ScrollView {
-                    VStack(spacing: 0) { // spacing'i 0 yaparak aralarındaki boşluğu kaldırıyoruz
+                    VStack(spacing: 0) {
                         ForEach(cart.cartItems) { item in
                             CartCardView(cart: cart, cartItem: item)
-                                .padding(.horizontal) // Yalnızca yatay padding bırakıyoruz
+                                .padding(.horizontal)
                                 .animation(.bouncy)
-                            
-                            if cart.cartItems.last?.id != item.id {
-                                Divider()
-                                    .padding(.vertical, 5)
-                            }
+                                .alert("Are You Sure", isPresented: $showAlert) {
+                                    Button("Remove", role: .destructive){
+                                        if let index = cart.cartItems.firstIndex(where: { $0.id == item.id }) {
+                                            cart.cartItems.remove(at: index)
+                                        }
+                                    }
+                                    Button("No", role: .cancel){}
+                                }
+                            DivideProducts(cart: cart, item: item)
                         }
-                    }
-                }
-
-                VStack {
-                    Spacer()
-                    if totalPrice != 0 {
-                        HStack {
-                            Button {
-                                print("Purchase process...")
-                            } label: {
-                                Text("Checkout")
-                                    .font(.title2)
-                                    .padding(.leading, 15)
-                                    .foregroundColor(.white)
-                                Image(systemName: "arrow.forward")
-                                    .font(.title3)
-                                    .padding(.vertical, 5)
-                                    .foregroundColor(.white)
-                            }
-                            Spacer()
-                            Text("$\(totalPrice, specifier: "%.2f")")
-                                .font(.headline)
-                                .padding(.trailing, 15)
-                                .foregroundColor(.white)
+                        Spacer()
+                        HStack(alignment: .bottom){
+                            CheckoutBtn(totalPrice: totalPrice)
                         }
-                        .frame(maxWidth: .infinity, minHeight: 70)
-                        .background(RoundedRectangle(cornerRadius: 15).fill(Color.blue).shadow(radius: 10))
-                        .padding()
-                    } else {
-                        CartEmptyView()
                     }
                 }
             }
             .navigationTitle("Cart")
-            .onAppear {
-                calculateTotalPrice()
-            }
-            .onChange(of: Array(cart.cartItems)) { _ in
-                calculateTotalPrice()
-            }
-        }
-    }
-
-    func calculateTotalPrice() {
-        totalPrice = cart.cartItems.reduce(0) { result, item in
-            result + (item.product.price * Double(item.quantity))
         }
     }
 }
@@ -99,7 +70,7 @@ struct CartCardView: View {
                     .font(.subheadline)
                     .fontWeight(.semibold)
             }
-            Spacer()
+            //Spacer()
 
             // Arttır/azalt butonu
             IncreaseDecreaseBtn(product: cartItem.product, cart: cart)
@@ -131,6 +102,45 @@ struct CartEmptyView: View {
     }
 }
 
-#Preview {
-    CartView(cart: Cart())
+struct DivideProducts : View {
+    @ObservedObject var cart: Cart
+    var item: CartItem
+    var body: some View {
+        if cart.cartItems.last?.id != item.id {
+            Divider()
+                .padding(.vertical, 5)
+        }
+    }
 }
+
+struct CheckoutBtn: View {
+    var totalPrice: Double
+    var body: some View {
+            if totalPrice != 0 {
+                HStack {
+                    Button {
+                        print("Purchase process...")
+                    } label: {
+                        Text("Checkout")
+                            .font(.title2)
+                            .padding(.leading, 15)
+                            .foregroundColor(.white)
+                        Image(systemName: "arrow.forward")
+                            .font(.title3)
+                            .padding(.vertical, 5)
+                            .foregroundColor(.white)
+                    }
+                    Spacer()
+                    Text("$\(totalPrice ?? 0, specifier: "%.2f")")
+                        .font(.headline)
+                        .padding(.trailing, 15)
+                        .foregroundColor(.white)
+                }
+                .frame(maxWidth: .infinity, minHeight: 70)
+                .background(RoundedRectangle(cornerRadius: 15).fill(Color.blue).shadow(radius: 10))
+                .padding()
+            } else {
+                Text("blabla")
+            }
+        }
+    }
