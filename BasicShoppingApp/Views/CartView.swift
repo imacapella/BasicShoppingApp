@@ -29,11 +29,12 @@ struct CartView: View {
                                 CartProductView(cart: cart, cartItem: item, showAlert: $showAlert, selectedItem: $selectedItem)
                                     .padding()
                                     .animation(.bouncy)
+                                DivideProducts(cart: cart, item: item)
                             }
-                        }
-                        Spacer()
-                        CheckoutBtn(cart: cart, totalPrice: totalPrice)
-                            .padding()
+                            Spacer()
+                            CheckoutBtn(cart: cart, totalPrice: totalPrice)
+                                .padding()
+                        }   
                     }
                     .alert("Are You Sure?", isPresented: $showAlert) {
                         Button("Remove", role: .destructive) {
@@ -63,11 +64,11 @@ struct CartProductView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 50, height: 50)
-                .padding(.trailing, 8)
+                .padding(.horizontal, 5)
 
             VStack(alignment: .leading) {
                 Text(cartItem.product.title)
-                    .frame(width: 150, alignment: .leading)
+                    .frame(width: 130, alignment: .center)
                     .font(.title3)
                     .fontWeight(.semibold)
                     .lineLimit(1)
@@ -81,6 +82,7 @@ struct CartProductView: View {
 
             // Arttır/azalt butonu
             IncreaseDecreaseBtn(product: cartItem.product, cart: cart, showAlert: $showAlert, selectedItem: $selectedItem, cartItem: cartItem)
+                .padding(.trailing)
         }
         .padding(10)
     }

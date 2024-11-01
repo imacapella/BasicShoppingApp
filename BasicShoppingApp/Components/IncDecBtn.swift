@@ -31,14 +31,14 @@ struct IncreaseDecreaseBtn: View {
                 Image("minus-square")
                     .resizable()
                     .frame(width: 40, height: 40)
-                    .padding(10)
+                    //.padding(10)
                     .foregroundColor(.white)
             }
             
             if let index = cart.cartItems.firstIndex(where: { $0.product.id == product.id }) {
                 Text("\(cart.cartItems[index].quantity)")
+                    .frame(width: 25, alignment: .center)
                     .font(.title)
-                    .padding()
                     .foregroundColor(.white)
             }
             Button(action: {
@@ -49,7 +49,7 @@ struct IncreaseDecreaseBtn: View {
                 Image("add-square")
                     .resizable()
                     .frame(width: 40, height: 40)
-                    .padding(10)
+                    //.padding(10)
                     .foregroundColor(.white)
                 Spacer()
             }
