@@ -8,6 +8,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct CartView: View {
+    @ObservedObject var viewModel : CartViewModel
     @State private var showAlert: Bool = false
     @State private var selectedItem: CartItem?  // Hangi ürünün silineceğini belirlemek için
     @ObservedObject var cart: Cart
@@ -26,9 +27,7 @@ struct CartView: View {
                     ScrollView {
                         VStack(spacing: 0) {
                             ForEach(cart.cartItems) { item in
-                                CartProductView(cart: cart, cartItem: item, showAlert: $showAlert, selectedItem: $selectedItem)
-                                    .padding()
-                                    .animation(.bouncy)
+                                CartProductView(cartItem: cart.cartItems[item])
                                 DivideProducts(cart: cart, item: item)
                             }
                             Spacer()
@@ -38,9 +37,7 @@ struct CartView: View {
                     }
                     .alert("Are You Sure?", isPresented: $showAlert) {
                         Button("Remove", role: .destructive) {
-                            if let item = selectedItem, let index = cart.cartItems.firstIndex(where: { $0.id == item.id }) {
-                                cart.cartItems.remove(at: index)
-                            }
+                            viewModel.removeFromCart()
                         }
                         Button("No", role: .cancel) {}
                     }
@@ -50,44 +47,6 @@ struct CartView: View {
         }
     }
 }
-
-
-struct CartProductView: View {
-    @ObservedObject var cart: Cart
-    var cartItem: CartItem
-    @Binding var showAlert: Bool
-    @Binding var selectedItem: CartItem?
-
-    var body: some View {
-        HStack {
-            WebImage(url: URL(string: cartItem.product.thumbnail))
-                .resizable()
-                .scaledToFit()
-                .frame(width: 50, height: 50)
-                .padding(.horizontal, 5)
-
-            VStack(alignment: .leading) {
-                Text(cartItem.product.title)
-                    .frame(width: 130, alignment: .center)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-
-                Text("$\(cartItem.product.price, specifier: "%.2f")")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-            }
-            Spacer()
-
-            // Arttır/azalt butonu
-            IncreaseDecreaseBtn(product: cartItem.product, cart: cart, showAlert: $showAlert, selectedItem: $selectedItem, cartItem: cartItem)
-                .padding(.trailing)
-        }
-        .padding(10)
-    }
-}
-
 
 struct CartEmptyView: View {
     var body: some View {
@@ -121,35 +80,4 @@ struct DivideProducts : View {
     }
 }
 
-struct CheckoutBtn: View {
-    @ObservedObject var cart: Cart
-    var totalPrice: Double
-    var body: some View {
-        if cart.cartItems.isEmpty{
-            Text("blabla")
-            } else {
-                HStack {
-                    Button {
-                        print("Purchase process...")
-                    } label: {
-                        Text("Checkout")
-                            .font(.title2)
-                            .padding(.leading, 15)
-                            .foregroundColor(.white)
-                        Image(systemName: "arrow.forward")
-                            .font(.title3)
-                            .padding(.vertical, 5)
-                            .foregroundColor(.white)
-                    }
-                    Spacer()
-                    Text("$\(totalPrice ?? 0, specifier: "%.2f")")
-                        .font(.headline)
-                        .padding(.trailing, 15)
-                        .foregroundColor(.white)
-                }
-                .frame(maxWidth: .infinity, minHeight: 70)
-                .background(RoundedRectangle(cornerRadius: 15).fill(Color.blue).shadow(radius: 10))
-                .padding()
-            }
-        }
-    }
+
