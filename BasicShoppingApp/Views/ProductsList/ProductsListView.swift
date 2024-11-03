@@ -23,18 +23,6 @@ struct ProductsListView: View {
         NavigationView {
             ScrollView {
                 VStack {
-                    Picker("Sort by", selection: $selectedSortOption) {
-                        ForEach(SortOptions.allCases){ option in
-                            HStack(alignment:.center){
-                                Text(option.rawValue)
-                                Image(systemName: option.iconName)
-                            }
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(12)
                     let productsInPairs = Array(stride(from: 0, to: filteredProducts.count, by: 2))
 
                     if !filteredProducts.isEmpty {

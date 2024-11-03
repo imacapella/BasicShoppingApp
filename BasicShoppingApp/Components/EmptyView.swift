@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CartEmptyView: View {
+struct EmptyInfoView: View {
     var icon: String
     var headline: String
     var desc: String

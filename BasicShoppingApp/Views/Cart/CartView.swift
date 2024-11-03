@@ -22,7 +22,9 @@ struct CartView: View {
         NavigationView {
             VStack {
                 if cart.cartItems.isEmpty {
-                    CartEmptyView(icon: "cart.fill.badge.plus", headline: "Cart is Empty", desc: "Add more goods to your cart!")
+                    Spacer()
+                    EmptyInfoView(icon: "cart.fill.badge.plus", headline: "Cart is Empty", desc: "Add more goods to your cart!")
+                    Spacer()
                 } else {
                     ScrollView {
                         VStack(spacing: 0) {
@@ -30,9 +32,10 @@ struct CartView: View {
                                 CartProductView(
                                     onIncreased: { viewModel.increaseQuantity(for: item) },
                                     onDecreased: { viewModel.decreaseQuantity(for: item) },
-                                    onRemove: {viewModel.selectItemToRemove(item)},
+                                    onRemove: {viewModel.removeFromCart()},
                                     cartItem: item
                                 )
+                                .animation(.bouncy)
 
                                 DivideProducts(cart: cart, item: item)
                             }
@@ -41,7 +44,7 @@ struct CartView: View {
                                 .padding()
                         }   
                     }
-                    .alert("Are You Sure?", isPresented: $showAlert) {
+                    .alert("Are You Sure?", isPresented: $viewModel.showAlert) {
                         Button("Remove", role: .destructive) {
                             viewModel.removeFromCart()
                         }

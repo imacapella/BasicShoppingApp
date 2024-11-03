@@ -52,6 +52,9 @@ class CartViewModel: ObservableObject {
             selectedItem = nil
             showAlert = false
         }
+        else{
+            
+        }
     }
 
     func checkout() {
