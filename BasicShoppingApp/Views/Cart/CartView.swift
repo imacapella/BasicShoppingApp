@@ -22,16 +22,22 @@ struct CartView: View {
         NavigationView {
             VStack {
                 if cart.cartItems.isEmpty {
-                    CartEmptyView()
+                    CartEmptyView(icon: "cart.fill.badge.plus", headline: "Cart is Empty", desc: "Add more goods to your cart!")
                 } else {
                     ScrollView {
                         VStack(spacing: 0) {
                             ForEach(cart.cartItems) { item in
-                                CartProductView(cartItem: cart.cartItems[item])
+                                CartProductView(
+                                    onIncreased: { viewModel.increaseQuantity(for: item) },
+                                    onDecreased: { viewModel.decreaseQuantity(for: item) },
+                                    onRemove: {viewModel.selectItemToRemove(item)},
+                                    cartItem: item
+                                )
+
                                 DivideProducts(cart: cart, item: item)
                             }
                             Spacer()
-                            CheckoutBtn(cart: cart, totalPrice: totalPrice)
+                            CheckoutBtn(totalPrice: totalPrice)
                                 .padding()
                         }   
                     }
@@ -48,36 +54,10 @@ struct CartView: View {
     }
 }
 
-struct CartEmptyView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "cart.fill.badge.plus")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100)
-                .padding()
 
-            Text("Cart is Empty")
-                .font(.headline)
 
-            Text("Add more goods to your cart!")
-                .font(.subheadline)
-                .multilineTextAlignment(.center)
-                .padding()
-        }
-        .padding()
-    }
-}
 
-struct DivideProducts : View {
-    @ObservedObject var cart: Cart
-    var item: CartItem
-    var body: some View {
-        if cart.cartItems.last?.id != item.id {
-            Divider()
-                .padding(.vertical, 5)
-        }
-    }
-}
+
+
 
 

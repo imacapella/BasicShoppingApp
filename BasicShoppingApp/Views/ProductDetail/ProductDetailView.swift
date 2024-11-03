@@ -90,7 +90,6 @@ struct ProductDetailView: View {
                 
                 if let existingCartItem = cart.cartItems.first(where: { $0.product.id == product.id }) {
                     // Ürün zaten sepette varsa, IncreaseDecreaseBtn bileşenini gösteriyoruz.
-                    IncreaseDecreaseBtn(product: existingCartItem.product, cart: cart, showAlert: $showAlert, selectedItem: $selectedItem, cartItem: existingCartItem)
                 } else {
                     Button(action: {
                         // Ürün sepette yoksa, sepete yeni bir ürün ekliyoruz.

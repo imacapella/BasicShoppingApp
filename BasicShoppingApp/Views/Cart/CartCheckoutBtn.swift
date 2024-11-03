@@ -8,11 +8,10 @@ import SwiftUI
 
 struct CheckoutBtn: View {
     var totalPrice: Double
-    var onCheckout: () -> Void
 
     var body: some View {
         HStack {
-            Button(action: onCheckout) {
+            Button(action:{}) {
                 Text("Checkout")
                     .font(.title2)
                     .padding(.leading, 15)
@@ -35,5 +34,5 @@ struct CheckoutBtn: View {
 }
 
 #Preview {
-    CheckoutBtn(totalPrice: 100, onCheckout: {})
+    CheckoutBtn(totalPrice: 100)
 }

@@ -8,7 +8,9 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct CartProductView: View {
-    @ObservedObject var viewModel : CartViewModel
+    var onIncreased: (() -> Void)?
+    var onDecreased: (() -> Void)?
+    var onRemove: (() -> Void)?
     var cartItem: CartItem
 
     var body: some View {
@@ -34,20 +36,32 @@ struct CartProductView: View {
             Spacer()
 
             HStack{
-                Button{viewModel.decreaseQuantity(for: cartItem)}
-                label: {
+                Button(action: {
+                    onDecreased?()
+                }) {
                     Image("minus-square")
-                        .frame(width: 25, height: 25)
+                        .resizable()
+                        .frame(width: 30, height: 30)
                 }
-                Text("\(cartItem.product.price)")
+                Text("\(cartItem.quantity)")
                     .font(.title3)
                     .fontWeight(.semibold)
-                Button{viewModel.increaseQuantity(for: cartItem)}
-                label: {
+                    .frame(width: 40)
+                Button(action: {
+                    onIncreased?()
+                }) {
                     Image("add-square")
-                        .frame(width: 25, height: 25)
+                        .resizable()
+                        .frame(width: 30, height: 30)
                 }
-            }
+                Spacer()
+                Button(action: {onRemove?()}) {
+                    Image(systemName: "trash")
+                        .resizable()
+                        .frame(width: 22, height: 25)
+                }
+
+            }.padding(.trailing, 10)
         }
         .padding(10)
     }
