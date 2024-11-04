@@ -18,7 +18,7 @@ struct BasicShoppingAppApp: App {
             ContentView(
                 dao: dao,
                 favoriteItems: favoriteItems,
-                cartViewModel: CartViewModel(cart: cart)  // CartViewModel örneğini burada oluşturuyoruz
+                cartViewModel: CartViewModel(cart: cart), favoritesViewModel: FavoritesViewModel(favoriteProducts: favoriteItems)  // CartViewModel örneğini burada oluşturuyoruz
             )
         }
     }

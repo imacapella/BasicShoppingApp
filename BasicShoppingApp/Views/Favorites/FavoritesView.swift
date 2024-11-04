@@ -4,6 +4,7 @@ import SDWebImageSwiftUI
 struct FavoritesView: View {
     @ObservedObject var favoriteItems: FavoritedProducts
     var product: Product?
+    @ObservedObject var viewModel: FavoritesViewModel
 
     var body: some View {
         NavigationView {
@@ -15,7 +16,7 @@ struct FavoritesView: View {
                         }
                         else{
                             ForEach(favoriteItems.favoriteProducts) { product in
-                                FavoritesCardView(favoriteItems: favoriteItems, product: product)
+                                FavoritesCardView(favoriteItems: favoriteItems, product: product, viewModel: viewModel)
                             }
                         }
                     }

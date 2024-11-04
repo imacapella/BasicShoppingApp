@@ -11,6 +11,7 @@ struct ContentView: View {
     @ObservedObject var dao: ProductsDao
     @ObservedObject var favoriteItems: FavoritedProducts
     @ObservedObject var cartViewModel: CartViewModel  // cartViewModel parametresi
+    @ObservedObject var favoritesViewModel: FavoritesViewModel
 
     var body: some View {
         TabView {
@@ -19,7 +20,7 @@ struct ContentView: View {
                     Label("Products", systemImage: "list.bullet")
                 }
 
-            FavoritesView(favoriteItems: favoriteItems)
+            FavoritesView(favoriteItems: favoriteItems, viewModel: favoritesViewModel)
                 .tabItem {
                     Label("Favorites", systemImage: "heart")
                 }

@@ -10,6 +10,7 @@ import SDWebImageSwiftUI
 struct FavoritesCardView: View {
     @ObservedObject var favoriteItems: FavoritedProducts
     var product: Product?
+    @ObservedObject var viewModel : FavoritesViewModel
 
     var body: some View {
         ZStack {
@@ -37,18 +38,18 @@ struct FavoritesCardView: View {
 
                         Spacer() // Metin ile buton arasında boşluk
 
-                        Button {
-                            if let index = favoriteItems.favoriteProducts.firstIndex(where: { $0.id == product.id }) {
-                                favoriteItems.favoriteProducts.remove(at: index)
-                            }
-                        } label: {
+                        Button(action: {
+                            viewModel.removeFromFavorites(product: product)
+                            }) {
                             Image(systemName: "heart.fill")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 19, height: 19)
                                 .shadow(color: .red, radius: 2)
                                 .foregroundColor(.red)
-                                .padding(.trailing, 8) // Sağ tarafta küçük bir boşluk
+                                .padding(.trailing, 8)
+                            }.animation(.bouncy)
+                        
                         }
                     }
                 }
@@ -63,4 +64,4 @@ struct FavoritesCardView: View {
             )
         }
     }
-}
+
