@@ -17,6 +17,7 @@ struct FavoritesView: View {
                         else{
                             ForEach(favoriteItems.favoriteProducts) { product in
                                 FavoritesCardView(favoriteItems: favoriteItems, product: product, viewModel: viewModel)
+                                    .padding(7)
                             }
                         }
                     }

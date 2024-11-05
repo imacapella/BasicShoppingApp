@@ -1,9 +1,3 @@
-//
-//  CartView.swift
-//  BasicShoppingApp
-//
-//  Created by Gürkan Karadaş on 25.10.2024.
-//
 import SwiftUI
 import SDWebImageSwiftUI
 
@@ -32,35 +26,30 @@ struct CartView: View {
                                 CartProductView(
                                     onIncreased: { viewModel.increaseQuantity(for: item) },
                                     onDecreased: { viewModel.decreaseQuantity(for: item) },
-                                    onRemove: {viewModel.removeFromCart()},
+                                    onRemove: { viewModel.removeFromCart() },
                                     cartItem: item
                                 )
                                 .animation(.bouncy)
-
+                                
                                 DivideProducts(cart: cart, item: item)
                             }
-                            Spacer()
-                            CheckoutBtn(totalPrice: totalPrice)
-                                .padding()
-                        }   
-                    }
-                    .alert("Are You Sure?", isPresented: $viewModel.showAlert) {
-                        Button("Remove", role: .destructive) {
-                            viewModel.removeFromCart()
                         }
-                        Button("No", role: .cancel) {}
                     }
+                    
+                    Spacer() // Checkout butonunun üstünde boşluk bırakır ve en alta iter
+                    
+                    CheckoutBtn(totalPrice: totalPrice)
+                        .padding()
+                        .shadow(radius: 5)
                 }
             }
             .navigationTitle("Cart")
+            .alert("Are You Sure?", isPresented: $viewModel.showAlert) {
+                Button("Remove", role: .destructive) {
+                    viewModel.removeFromCart()
+                }
+                Button("No", role: .cancel) {}
+            }
         }
     }
 }
-
-
-
-
-
-
-
-
