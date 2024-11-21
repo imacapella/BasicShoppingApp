@@ -112,3 +112,11 @@ To get started with this project locally, follow these steps:
 
 4. **Build and run the project** in Xcode by pressing `Cmd + R`.
 
+
+## Contact
+
+For any questions or feedback, you can reach me at:
+
+- Email: gurkankaradas42@gmail.com
+- GitHub: [@imacapella](https://github.com/imacapella)
+- LinkedIn: [Gürkan Karadaş](linkedin.com/gurkankaradas)
