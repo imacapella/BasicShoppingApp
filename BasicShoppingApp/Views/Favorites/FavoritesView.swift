@@ -8,26 +8,24 @@ struct FavoritesView: View {
 
     var body: some View {
         NavigationView {
-            ZStack {
+            if favoriteItems.favoriteProducts.isEmpty {
+                VStack {
+                    Spacer()
+                    EmptyInfoView(icon: "heart", headline: "You have no favorite products yet.", desc: "Add more goods to your product!")
+                    Spacer()
+                }
+                .navigationTitle("Favorites")
+            } else {
                 ScrollView {
                     VStack {
-                        if favoriteItems.favoriteProducts.isEmpty{
-                            EmptyInfoView(icon: "heart", headline: "You have no favorite products yet.", desc: "Add more goods to your product!")
-                        }
-                        else{
-                            ForEach(favoriteItems.favoriteProducts) { product in
-                                FavoritesCardView(favoriteItems: favoriteItems, product: product, viewModel: viewModel)
-                                    .padding(7)
-                            }
+                        ForEach(favoriteItems.favoriteProducts) { product in
+                            FavoritesCardView(favoriteItems: favoriteItems, product: product, viewModel: viewModel)
+                                .padding(7)
                         }
                     }
                 }
+                .navigationTitle("Favorites")
             }
-            .onAppear {
-                print(favoriteItems.favoriteProducts.first?.thumbnail ?? "Invalid URL")
-            }
-            .navigationTitle("Favorites")
         }
     }
 }
-
